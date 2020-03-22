@@ -1,6 +1,9 @@
+stages:
+    - ghidra
+    - plugin-builder
+
 
 .build:
-    stage: build
     image: docker
     tags:
         - docker
@@ -8,22 +11,51 @@
         - name: docker:dind
           alias: docker
     variables:
-        TAG: ${CI_REGISTRY_IMAGE}/${GHIDRA_VERSION}
         DOCKER_HOST: 'tcp://docker:2375'
-    script:
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    before_script:
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY || true
         - docker pull ${TAG} || true
-        - docker build --cache-from ${TAG} --build-arg GHIDRA_URL=${GHIDRA_URL} -t ${TAG} .
+    after_script:
         - docker push ${TAG}
 
-9.1.2:
+.base:
+    stage: ghidra
     extends: .build
+    variables:
+        TAG: ${CI_REGISTRY_IMAGE}/ghidra:${GHIDRA_VERSION}
+        DIRECTORY: 'base'
+    script:
+        - docker build --cache-from ${TAG} --build-arg GHIDRA_URL=${GHIDRA_URL} -t ${TAG} ${DIRECTORY}
+
+.plugin-builder:
+    stage: plugin-builder
+    extends: .build
+    variables:
+        TAG: ${CI_REGISTRY_IMAGE}/ghidra-plugin-builder:${GHIDRA_VERSION}
+        DIRECTORY: plugin-builder
+    script:
+        - docker build --cache-from ${TAG} --build-arg GHIDRA_VERSION=${GHIDRA_VERSION} --build-arg CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE} -t ${TAG} ${DIRECTORY}
+        
+
+ghidra 9.1.2:
+    extends: .base
     variables:
         GHIDRA_VERSION: '9.1.2'
         GHIDRA_URL: https://ghidra-sre.org/ghidra_9.1.2_PUBLIC_20200212.zip
 
-9.1.1:
-    extends: .build
+ghira 9.1.1:
+    extends: .base
     variables:
         GHIDRA_VERSION: '9.1.1'
         GHIDRA_URL: https://ghidra-sre.org/ghidra_9.1.1_PUBLIC_20191218.zip
+
+
+plugin-builder 9.1.2:
+    extends: .plugin-builder
+    variables:
+        GHIDRA_VERSION: '9.1.2'
+
+plugin-builder 9.1.1:
+    extends: .plugin-builder
+    variables:
+        GHIDRA_VERSION: '9.1.1'

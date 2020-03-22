@@ -1,4 +1,3 @@
-
 FROM alpine
 
 RUN apk --update add openjdk11 wget unzip
