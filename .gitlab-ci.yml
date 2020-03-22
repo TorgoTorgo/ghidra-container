@@ -1,0 +1,29 @@
+
+.build:
+    stage: build
+    image: docker
+    tags:
+        - docker
+    services:
+        - name: docker:dind
+          alias: docker
+    variables:
+        TAG: ${CI_REGISTRY_IMAGE}/${GHIDRA_VERSION}
+        DOCKER_HOST: 'tcp://docker:2375'
+    script:
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker pull ${TAG} || true
+        - docker build --cache-from ${TAG} --build-arg GHIDRA_URL=${GHIDRA_URL} -t ${TAG} .
+        - docker push ${TAG}
+
+9.1.2:
+    extends: .build
+    variables:
+        GHIDRA_VERSION: '9.1.2'
+        GHIDRA_URL: https://ghidra-sre.org/ghidra_9.1.2_PUBLIC_20200212.zip
+
+9.1.1:
+    extends: .build
+    variables:
+        GHIDRA_VERSION: '9.1.1'
+        GHIDRA_URL: https://ghidra-sre.org/ghidra_9.1.1_PUBLIC_20191218.zip
