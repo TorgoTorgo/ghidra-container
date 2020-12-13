@@ -36,6 +36,11 @@ stages:
     script:
         - docker build --cache-from ${TAG} --build-arg GHIDRA_VERSION=${GHIDRA_VERSION} --build-arg CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE} -t ${TAG} ${DIRECTORY}
         
+ghidra 9.2:
+    extends: .base
+    variables:
+        GHIDRA_VERSION: '9.2'
+        GHIDRA_URL: https://ghidra-sre.org/ghidra_9.2_PUBLIC_20201113.zip
 
 ghidra 9.1.2:
     extends: .base
@@ -49,6 +54,10 @@ ghira 9.1.1:
         GHIDRA_VERSION: '9.1.1'
         GHIDRA_URL: https://ghidra-sre.org/ghidra_9.1.1_PUBLIC_20191218.zip
 
+plugin-builder 9.2:
+    extends: .plugin-builder
+    variables:
+        GHIDRA_VERSION: '9.2'
 
 plugin-builder 9.1.2:
     extends: .plugin-builder
