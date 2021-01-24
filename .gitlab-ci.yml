@@ -60,23 +60,43 @@ ghidra 9.1.2:
         GHIDRA_VERSION: '9.1.2'
         GHIDRA_URL: https://ghidra-sre.org/ghidra_9.1.2_PUBLIC_20200212.zip
 
-ghira 9.1.1:
+ghidra 9.1.1:
     extends: .base
     variables:
         GHIDRA_VERSION: '9.1.1'
         GHIDRA_URL: https://ghidra-sre.org/ghidra_9.1.1_PUBLIC_20191218.zip
 
+plugin-builder 9.2.2:
+    extends: .plugin-builder
+    variables:
+        GHIDRA_VERSION: '9.2.2'
+    needs:
+        - "ghidra 9.2.2"
+
+plugin-builder 9.2.1:
+    extends: .plugin-builder
+    variables:
+        GHIDRA_VERSION: '9.2.1'
+    needs:
+        - "ghidra 9.2.1"
+
 plugin-builder 9.2:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '9.2'
+    needs:
+        - "ghidra 9.2"
 
 plugin-builder 9.1.2:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '9.1.2'
+    needs:
+        - "ghidra 9.1.2"
 
 plugin-builder 9.1.1:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '9.1.1'
+    needs:
+        - "ghidra 9.1.1"
