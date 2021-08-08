@@ -2,7 +2,6 @@ stages:
     - ghidra
     - plugin-builder
 
-
 .build:
     image: docker
     tags:
@@ -35,6 +34,12 @@ stages:
         DIRECTORY: plugin-builder
     script:
         - docker build --cache-from ${TAG} --build-arg GHIDRA_VERSION=${GHIDRA_VERSION} --build-arg CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE} -t ${TAG} ${DIRECTORY}
+
+ghidra 10.0.2:
+    extends: .base
+    variables:
+        GHIDRA_VERSION: '10.0.2'
+        GHIDRA_URL: https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.0.2_build/ghidra_10.0.2_PUBLIC_20210804.zip
 
 ghidra 10.0.1:
     extends: .base
@@ -89,6 +94,15 @@ ghidra 9.1.1:
     variables:
         GHIDRA_VERSION: '9.1.1'
         GHIDRA_URL: https://ghidra-sre.org/ghidra_9.1.1_PUBLIC_20191218.zip
+
+# ------------------------------------------------------------------------------
+
+plugin-builder 10.0.2:
+    extends: .plugin-builder
+    variables:
+        GHIDRA_VERSION: '10.0.2'
+    needs:
+        - "ghidra 10.0.2"
 
 plugin-builder 10.0.1:
     extends: .plugin-builder
