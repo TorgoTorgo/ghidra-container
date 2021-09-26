@@ -1,5 +1,4 @@
 stages:
-    - ghidra
     - plugin-builder
 
 .build:
@@ -17,165 +16,71 @@ stages:
     after_script:
         - docker push ${TAG}
 
-.base:
-    stage: ghidra
-    extends: .build
-    variables:
-        TAG: ${CI_REGISTRY_IMAGE}/ghidra:${GHIDRA_VERSION}
-        DIRECTORY: 'base'
-    script:
-        - docker build --cache-from ${TAG} --build-arg GHIDRA_URL=${GHIDRA_URL} -t ${TAG} ${DIRECTORY}
-
 .plugin-builder:
     stage: plugin-builder
     extends: .build
     variables:
         TAG: ${CI_REGISTRY_IMAGE}/ghidra-plugin-builder:${GHIDRA_VERSION}
-        DIRECTORY: plugin-builder
+        DIRECTORY: .
     script:
         - docker build --cache-from ${TAG} --build-arg GHIDRA_VERSION=${GHIDRA_VERSION} --build-arg CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE} -t ${TAG} ${DIRECTORY}
 
-ghidra 10.0.3:
-    extends: .base
+plugin-builder latest:
+    extends: .plugin-builder
     variables:
-        GHIDRA_VERSION: '10.0.3'
-        GHIDRA_URL: https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.0.3_build/ghidra_10.0.3_PUBLIC_20210908.zip
-
-ghidra 10.0.2:
-    extends: .base
-    variables:
-        GHIDRA_VERSION: '10.0.2'
-        GHIDRA_URL: https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.0.2_build/ghidra_10.0.2_PUBLIC_20210804.zip
-
-ghidra 10.0.1:
-    extends: .base
-    variables:
-        GHIDRA_VERSION: '10.0.1'
-        GHIDRA_URL: https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.0.1_build/ghidra_10.0.1_PUBLIC_20210708.zip
-
-ghidra 10.0:
-    extends: .base
-    variables:
-        GHIDRA_VERSION: '10.0'
-        GHIDRA_URL: https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.0_build/ghidra_10.0_PUBLIC_20210621.zip
-
-ghidra 10.0.0_beta:
-    extends: .base
-    variables:
-        GHIDRA_VERSION: '10.0.0-beta'
-        GHIDRA_URL: https://ghidra-sre.org/ghidra_10.0-BETA_PUBLIC_20210521.zip
-
-ghidra 9.2.4:
-    extends: .base
-    variables:
-        GHIDRA_VERSION: '9.2.4'
-        GHIDRA_URL: https://ghidra-sre.org/ghidra_9.2.4_PUBLIC_20210427.zip
-
-ghidra 9.2.2:
-    extends: .base
-    variables:
-        GHIDRA_VERSION: '9.2.2'
-        GHIDRA_URL: https://ghidra-sre.org/ghidra_9.2.2_PUBLIC_20201229.zip
-
-ghidra 9.2.1:
-    extends: .base
-    variables:
-        GHIDRA_VERSION: '9.2.1'
-        GHIDRA_URL: https://ghidra-sre.org/ghidra_9.2.1_PUBLIC_20201215.zip
-        
-ghidra 9.2:
-    extends: .base
-    variables:
-        GHIDRA_VERSION: '9.2'
-        GHIDRA_URL: https://ghidra-sre.org/ghidra_9.2_PUBLIC_20201113.zip
-
-ghidra 9.1.2:
-    extends: .base
-    variables:
-        GHIDRA_VERSION: '9.1.2'
-        GHIDRA_URL: https://ghidra-sre.org/ghidra_9.1.2_PUBLIC_20200212.zip
-
-ghidra 9.1.1:
-    extends: .base
-    variables:
-        GHIDRA_VERSION: '9.1.1'
-        GHIDRA_URL: https://ghidra-sre.org/ghidra_9.1.1_PUBLIC_20191218.zip
-
-# ------------------------------------------------------------------------------
+        GHIDRA_VERSION: 'latest'
 
 plugin-builder 10.0.3:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '10.0.3'
-    needs:
-        - "ghidra 10.0.3"
 
 plugin-builder 10.0.2:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '10.0.2'
-    needs:
-        - "ghidra 10.0.2"
 
 plugin-builder 10.0.1:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '10.0.1'
-    needs:
-        - "ghidra 10.0.1"
 
 plugin-builder 10.0:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '10.0'
-    needs:
-        - "ghidra 10.0"
 
 plugin-builder 10.0.0_beta:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '10.0.0-beta'
-    needs:
-        - "ghidra 10.0.0_beta"
 
 plugin-builder 9.2.4:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '9.2.4'
-    needs:
-        - "ghidra 9.2.4"
 
 plugin-builder 9.2.2:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '9.2.2'
-    needs:
-        - "ghidra 9.2.2"
 
 plugin-builder 9.2.1:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '9.2.1'
-    needs:
-        - "ghidra 9.2.1"
 
 plugin-builder 9.2:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '9.2'
-    needs:
-        - "ghidra 9.2"
 
 plugin-builder 9.1.2:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '9.1.2'
-    needs:
-        - "ghidra 9.1.2"
 
 plugin-builder 9.1.1:
     extends: .plugin-builder
     variables:
         GHIDRA_VERSION: '9.1.1'
-    needs:
-        - "ghidra 9.1.1"

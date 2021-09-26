@@ -1,7 +1,0 @@
-ARG CI_REGISTRY_IMAGE
-ARG GHIDRA_VERSION
-FROM ${CI_REGISTRY_IMAGE}/ghidra:${GHIDRA_VERSION}
-
-RUN apk --update add gradle
-
-CMD gradle
