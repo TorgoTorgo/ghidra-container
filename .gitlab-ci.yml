@@ -30,6 +30,11 @@ plugin-builder latest:
     variables:
         GHIDRA_VERSION: 'latest'
 
+plugin-builder 10.0.4:
+    extends: .plugin-builder
+    variables:
+        GHIDRA_VERSION: '10.0.4'
+
 plugin-builder 10.0.3:
     extends: .plugin-builder
     variables:
